@@ -1,0 +1,2 @@
+[12/18/2023, 3:14:49 PM] layer "export4.jpg10 copie": Expected end of input but "c" found.
+[12/18/2023, 3:16:02 PM] layer "export5.jpg10 copie": Expected end of input but "c" found.
