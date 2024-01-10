@@ -1,4 +1,4 @@
-Credit pohoto : Faces & Photography by Dani Oshi - https://www.daniosorio.com/faces-photography/
+Credits : Faces & Photography by Dani Oshi - https://www.daniosorio.com/faces-photography/
 
 https://github.com/ambientmoxie/slitscan_and_lines/assets/87242351/7668fc67-70b3-46ef-837c-6be799f9e25c
 
