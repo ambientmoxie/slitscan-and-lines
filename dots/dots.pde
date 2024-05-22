@@ -1,13 +1,15 @@
 PImage seeds;
 PGraphics buffer, output;
-float w, h, xLimit, yLimit, cell;
+float w, h, xLimit, yLimit, cell, chance;
 boolean isInColor, verticalDistribution;
+
 
 void setup() {
   size(700, 990);
   seeds = loadImage("0.jpg");
+  colorMode(HSB, 360, 100, 100);
   buffer = createGraphics(width, height);
-  output = createGraphics(width / 2, height);
+  output = createGraphics(width, height);
   noLoop();
 
   // --------------------------------------------
@@ -15,7 +17,8 @@ void setup() {
 
   isInColor = false;
   verticalDistribution = true;
-  cell = 19;
+  cell = 50;
+  chance = 1;
 
   // --------------------------------------------
   
@@ -29,19 +32,13 @@ void draw() {
   // Init the dithered output and display it
   drawOutput();
   image(output, 0, 0);
-
-  // Display a reverse output to obtain a "mirror effect"
-  pushMatrix(); 
-  scale(-1, 1);
-  translate(- width, 0);
-  image(output, 0, 0);
-  popMatrix();
 }
 
 void drawBuffer() {
   buffer.beginDraw();
   buffer.imageMode(CENTER);
   buffer.image(seeds, width / 2, height / 2);
+  buffer.filter(INVERT);
   buffer.endDraw();
 }
 
@@ -49,17 +46,16 @@ void drawBuffer() {
 void drawOutput() {
 
   output.beginDraw();
+  output.background(255);
 
-  w = verticalDistribution ? width / cell : 2;
-  h = verticalDistribution ? 2 : height / cell;
-  xLimit = verticalDistribution ? cell : output.width;
-  yLimit = verticalDistribution ? output.height : cell;
+  w = width / cell;
+  h = w;
   
   // Load the pixels of the buffer
   buffer.loadPixels();
 
-  for (int x = 0; x < xLimit; x++) {
-    for (int y = 0; y < yLimit; y++) {
+  for (int x = 0; x < cell; x++) {
+    for (int y = 0; y < cell * 2; y++) {
 
       int pxW = int((w * x) + (w / 2));
       int pxH = int((h * y) + (h / 2));
@@ -70,19 +66,18 @@ void drawOutput() {
       float green = green(c);
       float blue = blue(c);
 
-      if (isInColor) {
-        buffer.colorMode(RGB, 255, 255, 255);
-        color nc = color(red, green, blue);
-        output.stroke(nc);
-        output.fill(nc);
-      } else {
-        buffer.colorMode(HSB, 360, 100, 100);
-        float cb = brightness(c);
-        output.stroke(cb);
-        output.fill(cb);
-      }
+      output.noStroke();
+      float cb = brightness(c);
+      float cm = map(cb, 0, 100, 8, w);
 
-      output.rect(w * x, h * y, w, h);
+      float mapChance = map(y, 0, cell, 0, 1);
+      color cc = random(0,1) > chance - mapChance ? color(0) : color(360, 0, 100);
+
+      output.fill(cc);
+      output.pushMatrix();
+      output.translate(w / 2, h / 2);
+      output.ellipse(w * x, h * y, cm, cm);
+      output.popMatrix();
     }
   }
   output.endDraw();
